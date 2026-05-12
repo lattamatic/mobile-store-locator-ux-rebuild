@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #fff9f5;
+  color: #191512;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.leaflet-container {
+  z-index: 0;
+  height: 100%;
+  width: 100%;
+  font: inherit;
+}
+
+.leaflet-control-attribution {
+  font-size: 0.65rem;
+}
+
+.store-map-marker {
+  display: inline-flex;
+  min-width: 4.25rem;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 14px 28px rgba(45, 31, 26, 0.22);
+  color: #8f4a5a;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
+  padding: 0.62rem 0.72rem;
+}
+
+.store-map-marker::after {
+  position: absolute;
+  bottom: -0.28rem;
+  left: 50%;
+  height: 0.62rem;
+  width: 0.62rem;
+  transform: translateX(-50%) rotate(45deg);
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+  background: inherit;
+  content: "";
+}
+
+.store-map-marker-selected {
+  background: #191512;
+  color: #ffffff;
+}

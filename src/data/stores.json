@@ -1,0 +1,72 @@
+[
+  {
+    "id": "paris-marais",
+    "name": "Maison Belle Marais",
+    "city": "Paris",
+    "postalCode": "75003",
+    "address": "18 Rue Vieille du Temple",
+    "distanceKm": 0.8,
+    "openNow": true,
+    "closingTime": "20:00",
+    "services": ["Color", "Cut", "Brow Bar"],
+    "rating": 4.8,
+    "phone": "+33 1 42 00 18 03",
+    "coordinates": { "lat": 48.8589, "lng": 2.3617 }
+  },
+  {
+    "id": "paris-saint-germain",
+    "name": "Atelier Lumiere Saint-Germain",
+    "city": "Paris",
+    "postalCode": "75006",
+    "address": "9 Rue Bonaparte",
+    "distanceKm": 1.6,
+    "openNow": true,
+    "closingTime": "19:30",
+    "services": ["Skincare", "Blowout", "Cut"],
+    "rating": 4.7,
+    "phone": "+33 1 45 00 75 06",
+    "coordinates": { "lat": 48.8563, "lng": 2.3344 }
+  },
+  {
+    "id": "paris-opera",
+    "name": "Belle Ligne Opera",
+    "city": "Paris",
+    "postalCode": "75009",
+    "address": "31 Boulevard Haussmann",
+    "distanceKm": 2.4,
+    "openNow": false,
+    "closingTime": "18:00",
+    "services": ["Color", "Blowout"],
+    "rating": 4.5,
+    "phone": "+33 1 48 00 75 09",
+    "coordinates": { "lat": 48.8721, "lng": 2.3322 }
+  },
+  {
+    "id": "neuilly",
+    "name": "Maison Belle Neuilly",
+    "city": "Neuilly-sur-Seine",
+    "postalCode": "92200",
+    "address": "7 Avenue Charles de Gaulle",
+    "distanceKm": 5.9,
+    "openNow": true,
+    "closingTime": "20:30",
+    "services": ["Skincare", "Brow Bar"],
+    "rating": 4.6,
+    "phone": "+33 1 47 00 92 20",
+    "coordinates": { "lat": 48.8846, "lng": 2.2686 }
+  },
+  {
+    "id": "boulogne",
+    "name": "Salon Belle Boulogne",
+    "city": "Boulogne-Billancourt",
+    "postalCode": "92100",
+    "address": "42 Avenue Jean Baptiste Clement",
+    "distanceKm": 7.2,
+    "openNow": false,
+    "closingTime": "18:30",
+    "services": ["Cut", "Color", "Blowout"],
+    "rating": 4.4,
+    "phone": "+33 1 46 00 92 10",
+    "coordinates": { "lat": 48.8355, "lng": 2.2412 }
+  }
+]
