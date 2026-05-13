@@ -39,6 +39,7 @@ Place final screenshots in `public/screenshots/`.
 - Responsive desktop split layout
 - “Near me” simulation
 - Store detail drawer
+- SEO-friendly sample salon page
 - Loading, empty, and error states
 
 ## Architecture Overview

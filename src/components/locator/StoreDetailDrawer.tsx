@@ -1,6 +1,7 @@
 "use client";
 
-import { Phone, X } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Phone, X } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import type { Store } from "@/types/store";
@@ -57,7 +58,13 @@ export function StoreDetailDrawer({ store, onClose }: StoreDetailDrawerProps) {
         </div>
 
         <div className="mt-6 grid gap-2 sm:grid-cols-2">
-          <Button type="button">Book appointment</Button>
+          <Link
+            href="/salons/maison-belle-marais"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-ink px-4 text-sm font-semibold text-white transition hover:bg-rosewood"
+          >
+            See Salon page
+            <ArrowRight className="h-4 w-4" />
+          </Link>
           <Button type="button" variant="secondary">
             <Phone className="h-4 w-4" />
             Call salon
