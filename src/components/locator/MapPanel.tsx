@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import type { Store } from "@/types/store";
 
 type LeafletMap = {
+  closePopup: () => void;
   remove: () => void;
   setView: (center: [number, number], zoom: number, options?: unknown) => void;
 };
@@ -92,10 +93,18 @@ function createMarkerIcon(leaflet: LeafletApi, store: Store, selected: boolean) 
   });
 }
 
+function getPopupContent(store: Store) {
+  return `<strong>${store.name}</strong><br />
+    ${store.address}<br />
+    ${store.openNow ? "Open now" : "Closed today"} · closes ${store.closingTime}<br />
+    ${store.distanceKm} km away · ${store.services.join(", ")}`;
+}
+
 export function MapPanel({ stores, selectedStoreId, onSelectStore }: MapPanelProps) {
   const mapElementRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<LeafletMap | null>(null);
   const markersRef = useRef<LeafletMarker[]>([]);
+  const outsideClickHandlerRef = useRef<((event: MouseEvent) => void) | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -124,6 +133,14 @@ export function MapPanel({ stores, selectedStoreId, onSelectStore }: MapPanelPro
       leaflet.control.zoom({ position: "bottomright" }).addTo(map);
       mapRef.current = map;
       window.setTimeout(() => map.setView(PARIS_CENTER, 12), 0);
+
+      const outsideClickHandler = (event: MouseEvent) => {
+        const target = event.target as HTMLElement | null;
+        if (!target || target.closest(".leaflet-popup, .store-map-marker, .leaflet-control")) return;
+        map.closePopup();
+      };
+      outsideClickHandlerRef.current = outsideClickHandler;
+      document.addEventListener("click", outsideClickHandler);
     }
 
     initialiseMap();
@@ -150,7 +167,7 @@ export function MapPanel({ stores, selectedStoreId, onSelectStore }: MapPanelPro
             title: store.name
           })
           .addTo(map)
-          .bindPopup(`<strong>${store.name}</strong><br />${store.address}<br />${store.distanceKm} km away`)
+          .bindPopup(getPopupContent(store))
           .on("click", () => onSelectStore(store));
 
         return marker;
@@ -171,6 +188,9 @@ export function MapPanel({ stores, selectedStoreId, onSelectStore }: MapPanelPro
 
   useEffect(() => {
     return () => {
+      if (outsideClickHandlerRef.current) {
+        document.removeEventListener("click", outsideClickHandlerRef.current);
+      }
       markersRef.current.forEach((marker) => marker.remove());
       mapRef.current?.remove();
       mapRef.current = null;

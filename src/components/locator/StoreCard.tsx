@@ -12,6 +12,8 @@ type StoreCardProps = {
 };
 
 export function StoreCard({ store, selected, onSelect }: StoreCardProps) {
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${store.coordinates.lat},${store.coordinates.lng}`;
+
   return (
     <article
       className={`rounded-[1.25rem] border bg-white p-4 shadow-sm transition ${
@@ -49,9 +51,15 @@ export function StoreCard({ store, selected, onSelect }: StoreCardProps) {
           View details
           <ArrowRight className="h-4 w-4" />
         </Button>
-        <Button variant="secondary" type="button" className="px-3" aria-label={`Get directions to ${store.name}`}>
+        <a
+          href={directionsUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex min-h-11 items-center justify-center rounded-full border border-champagne bg-white px-3 text-ink transition hover:border-rosewood"
+          aria-label={`Get directions to ${store.name}`}
+        >
           <Navigation className="h-4 w-4" />
-        </Button>
+        </a>
       </div>
     </article>
   );

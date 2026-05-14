@@ -48,6 +48,7 @@ export const metadata: Metadata = {
 };
 
 export default function SalonPage() {
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${salon.coordinates.latitude},${salon.coordinates.longitude}`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BeautySalon",
@@ -100,6 +101,23 @@ export default function SalonPage() {
           Back to store locator
         </Link>
 
+        <section
+          className="mt-6 min-h-[280px] overflow-hidden rounded-[1.75rem] bg-cover bg-center shadow-soft lg:min-h-[420px]"
+          style={{
+            backgroundImage:
+              "linear-gradient(90deg, rgba(25,21,18,0.58), rgba(25,21,18,0.12)), url('https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1800&q=80')"
+          }}
+          aria-label="Premium salon interior"
+        >
+          <div className="flex min-h-[280px] max-w-2xl flex-col justify-end p-6 text-white lg:min-h-[420px] lg:p-10">
+            <Badge tone="success">Sample salon page</Badge>
+            <h1 className="mt-4 text-4xl font-bold lg:text-6xl">{salon.name}</h1>
+            <p className="mt-4 text-lg leading-8 text-white/82">
+              A premium Le Marais salon profile designed for local SEO, service discovery, and high-intent mobile decisions.
+            </p>
+          </div>
+        </section>
+
         <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
           <section className="rounded-[1.75rem] bg-white p-5 shadow-soft lg:p-8">
             <div className="flex flex-wrap gap-2">
@@ -108,19 +126,25 @@ export default function SalonPage() {
               <Badge>Paris {salon.postalCode}</Badge>
             </div>
 
-            <h1 className="mt-5 text-4xl font-bold text-ink lg:text-6xl">{salon.name}</h1>
+            <h2 className="mt-5 text-3xl font-bold text-ink lg:text-5xl">{salon.name}</h2>
             <p className="mt-4 max-w-2xl text-lg leading-8 text-ink/68">
               Premium beauty salon in Paris 3e for polished color, precision cuts, brow shaping, and express glow services.
             </p>
 
             <div className="mt-6 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-[1.25rem] border border-champagne bg-pearl p-4">
+              <a
+                href={directionsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-[1.25rem] border border-champagne bg-pearl p-4 transition hover:border-rosewood hover:bg-white"
+                aria-label={`Get directions to ${salon.name}`}
+              >
                 <MapPin className="h-5 w-5 text-rosewood" />
                 <strong className="mt-3 block text-sm text-ink">{salon.address}</strong>
                 <span className="text-sm text-ink/60">
                   {salon.city} {salon.postalCode}
                 </span>
-              </div>
+              </a>
               <div className="rounded-[1.25rem] border border-champagne bg-pearl p-4">
                 <Star className="h-5 w-5 text-rosewood" />
                 <strong className="mt-3 block text-sm text-ink">{salon.rating} average rating</strong>
@@ -142,7 +166,9 @@ export default function SalonPage() {
                 Call salon
               </a>
               <a
-                href={`https://www.google.com/maps/search/?api=1&query=${salon.coordinates.latitude},${salon.coordinates.longitude}`}
+                href={directionsUrl}
+                target="_blank"
+                rel="noreferrer"
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-champagne bg-white px-5 text-sm font-semibold text-ink transition hover:border-rosewood"
               >
                 <MapPin className="h-4 w-4" />
