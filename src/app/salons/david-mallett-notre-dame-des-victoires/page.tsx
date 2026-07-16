@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, CalendarDays, Clock, ExternalLink, MapPin, Phone, Sparkles, Star } from "lucide-react";
+import { ArrowLeft, CalendarDays, Clock, ExternalLink, MapPin, Phone, ShieldCheck, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 
 const salon = {
@@ -12,13 +12,7 @@ const salon = {
   phone: "+33 1 40 20 00 23",
   email: "info@david-mallett.com",
   website: "https://david-mallett.com/pages/notre-dame",
-  rating: 4.8,
-  reviewCount: 240,
   closingTime: "20:00",
-  coordinates: {
-    latitude: 48.866917,
-    longitude: 2.341386
-  },
   heroImage:
     "https://commons.wikimedia.org/wiki/Special:FilePath/Paris%20-%2014%20rue%20Notre-Dame-des-Victoires%20-%20facade.jpg",
   services: [
@@ -40,7 +34,7 @@ const salon = {
   ],
   sourceNotes: [
     "Official David Mallett page: address, phone, salon description, selected prices, and opening hours.",
-    "Wikimedia Commons: building coordinates and header facade image."
+    "Google/Places rating, review count, current open status, and verified map coordinates should be populated through Places API once a Place ID is stored."
   ]
 };
 
@@ -60,7 +54,8 @@ export const metadata: Metadata = {
 };
 
 export default function SalonPage() {
-  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${salon.coordinates.latitude},${salon.coordinates.longitude}`;
+  const fullAddress = `${salon.name}, ${salon.address}, ${salon.postalCode} ${salon.city}, France`;
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(fullAddress)}`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "HairSalon",
@@ -75,17 +70,7 @@ export default function SalonPage() {
       postalCode: salon.postalCode,
       addressCountry: "FR"
     },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: salon.coordinates.latitude,
-      longitude: salon.coordinates.longitude
-    },
     telephone: salon.phone,
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: salon.rating,
-      reviewCount: salon.reviewCount
-    },
     openingHoursSpecification: salon.hours
       .filter(([, hours]) => hours !== "Closed")
       .map(([day, hours]) => {
@@ -163,9 +148,9 @@ export default function SalonPage() {
                 </span>
               </a>
               <div className="rounded-[1.25rem] border border-champagne bg-pearl p-4">
-                <Star className="h-5 w-5 text-rosewood" />
-                <strong className="mt-3 block text-sm text-ink">{salon.rating} portfolio rating</strong>
-                <span className="text-sm text-ink/60">Replace with Google rating via Places API</span>
+                <ShieldCheck className="h-5 w-5 text-rosewood" />
+                <strong className="mt-3 block text-sm text-ink">Source-backed profile</strong>
+                <span className="text-sm text-ink/60">Google rating will come from Places API</span>
               </div>
               <div className="rounded-[1.25rem] border border-champagne bg-pearl p-4">
                 <Clock className="h-5 w-5 text-rosewood" />
