@@ -6,8 +6,9 @@ import { Badge } from "@/components/ui/Badge";
 import { getGooglePlacesSalonData } from "@/lib/google-places";
 
 const salon = {
-  name: "Salon David Mallett - Notre Dame des Victoires",
-  shortName: "David Mallett Notre Dame des Victoires",
+  name: "David Mallett",
+  shortName: "David Mallett",
+  locationLabel: "Notre Dame des Victoires",
   address: "14 rue Notre Dame des Victoires",
   city: "Paris",
   postalCode: "75002",
@@ -36,7 +37,7 @@ const salon = {
   ],
   sourceNotes: [
     "Official David Mallett page: address, phone, salon description, selected prices, and opening hours.",
-    "Google/Places rating, review count, current open status, and verified map coordinates should be populated through Places API once a Place ID is stored."
+    "Google Places: rating, review count, reviews, owner photos, current open status, directions link, and verified map coordinates."
   ]
 };
 
@@ -63,6 +64,11 @@ const verifiedPlacesFallback = {
   primaryType: "Hair Salon"
 };
 
+const googlePlaceId = "ChIJr6dAxjxu5kcRbrBGJQ62AVk";
+const allReviewsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+  "David Mallett, 14 Rue Notre Dame des Victoires, 75002 Paris"
+)}&query_place_id=${googlePlaceId}`;
+
 const verifiedPlacesPhotos = [
   {
     url: "https://lh3.googleusercontent.com/place-photos/AG9NLjAqh1nS-ztNUXXEaVRvbnHJBgTSSkTggOGwtHJr0835wnXMLJ1Wz3YNfkCYlYWtV25LnibleCA1GR6krWhv34nwqK_u4U_zw_608WRVFzXLGYWDWJ5nFPMmRL9-J_P78g4S3KgZzup6arn-nQ=s4800-w1200",
@@ -86,35 +92,57 @@ const verifiedPlacesReviews = [
     author: "Judi Hausmann",
     rating: 5,
     date: "3 months ago",
+    url: "https://www.google.com/maps/reviews/data=!4m6!14m5!1m4!2m3!1sCi9DQUlRQUNvZENodHljRjlvT2taaVJucElVMXBWVjFkME16VjFVbkJpZUdKd05sRRAB!2m1!1s0x47e66e3cc640a7af:0x5901b60e2546b06e",
     text:
-      "Exceptional experience every single time. I visit Paris several times each year and the first thing I do is go to the salon for a cut with David and a manicure with Laurence."
+      "Exceptional experience every single time. I visit Paris several times each year and the first thing I do is go to the salon for a cut with David and a manicure with Laurence. David is the best hair cutter in the world."
   },
   {
     author: "S B",
     rating: 5,
     date: "3 months ago",
+    url: "https://www.google.com/maps/reviews/data=!4m6!14m5!1m4!2m3!1sCi9DQUlRQUNvZENodHljRjlvT2sxT04zZFpiRE51YlMwMGIwbHhjSE54TW1GalVIYxAB!2m1!1s0x47e66e3cc640a7af:0x5901b60e2546b06e",
     text:
-      "I treated myself to a visit at David Mallett Hairdressing for my birthday, and it turned out to be one of the best decisions I have made. The whole experience felt special."
+      "I treated myself to a visit at David Mallett Hairdressing for my birthday, and it turned out to be one of the best decisions I have made. David is kind, elegant, easy to talk to, and made the experience special."
   },
   {
     author: "angie ferrer",
     rating: 5,
     date: "6 months ago",
+    url: "https://www.google.com/maps/reviews/data=!4m6!14m5!1m4!2m3!1sCi9DQUlRQUNvZENodHljRjlvT2tWVVdtNHpORGhLUzBkV01rMDJURGx6Tm01cVZrRRAB!2m1!1s0x47e66e3cc640a7af:0x5901b60e2546b06e",
     text:
       "I was in Paris and had the best experience with color by Sarah and cut by Alain. From the service to the results and the ambience of the salon, everything was perfect."
   }
 ];
 
+const salonFaqs = [
+  {
+    question: "Do I need an appointment at David Mallett?",
+    answer: "For a premium salon experience, users should book ahead or call the salon before visiting."
+  },
+  {
+    question: "Where is the salon located?",
+    answer: "The salon is at 14 Rue Notre Dame des Victoires in Paris 75002, near Place des Victoires and Galerie Vivienne."
+  },
+  {
+    question: "What information should a real salon page combine?",
+    answer: "A strong local SEO page combines Google Places trust data, owner photos, first-party service content, FAQs, and clear conversion CTAs."
+  },
+  {
+    question: "Are services and prices from Google Places?",
+    answer: "No. Services and prices should come from the salon website or internal catalog because Google Places does not reliably provide salon service menus or price lists."
+  }
+];
+
 export const metadata: Metadata = {
-  title: `${salon.shortName} | Luxury Hair Salon in Paris ${salon.postalCode}`,
+  title: `${salon.shortName} | Hair Salon in Paris ${salon.postalCode}`,
   description:
-    "Discover Salon David Mallett Notre Dame des Victoires in Paris 75002, a luxury hair salon offering cuts, color, balayage, Tokio treatments, and beauty services.",
+    "Discover David Mallett in Paris 75002 with Google rating, reviews, owner photos, hours, directions, services, and local salon FAQ.",
   alternates: {
     canonical: "/salons/david-mallett-notre-dame-des-victoires"
   },
   openGraph: {
-    title: `${salon.shortName} | Luxury Hair Salon in Paris`,
-    description: "Luxury Paris hair salon near Place des Victoires and Galerie Vivienne.",
+    title: `${salon.shortName} | Hair Salon in Paris`,
+    description: "Paris hair salon profile with Google rating, reviews, owner photos, hours, and directions.",
     type: "website",
     images: [{ url: salon.heroImage, alt: "Facade at 14 rue Notre Dame des Victoires in Paris" }]
   }
@@ -219,7 +247,7 @@ export default async function SalonPage() {
             <Badge tone="success">Real salon example</Badge>
             <h1 className="mt-4 text-4xl font-bold lg:text-6xl">{salon.shortName}</h1>
             <p className="mt-4 text-lg leading-8 text-white/84">
-              A luxury Paris hair salon in a 17th-century hotel particulier, positioned between Place des Victoires and Galerie Vivienne.
+              {salon.locationLabel} · Paris {salon.postalCode}
             </p>
           </div>
         </section>
@@ -341,18 +369,25 @@ export default async function SalonPage() {
 
           <div className="rounded-[1.75rem] border border-champagne bg-white p-5 shadow-soft">
             <CalendarDays className="h-5 w-5 text-rosewood" />
-            <h2 className="mt-3 text-xl font-bold text-ink">Why this page matters</h2>
-            <p className="mt-3 text-sm leading-6 text-ink/65">
-              This page shows how a real salon profile can combine first-party content, Google Places data, local SEO structure, and
-              conversion CTAs.
-            </p>
+            <h2 className="mt-3 text-xl font-bold text-ink">Plan your visit</h2>
+            <div className="mt-4 space-y-3 text-sm leading-6 text-ink/65">
+              <p>Check today&apos;s hours, call the salon, or open Google Maps before deciding.</p>
+              <a href={directionsUrl} target="_blank" rel="noreferrer" className="inline-flex font-bold text-rosewood">
+                Open location
+              </a>
+            </div>
           </div>
         </section>
 
         <section className="mt-8 rounded-[1.75rem] bg-white p-5 shadow-soft lg:p-8">
-          <div className="flex items-center gap-2">
-            <Star className="h-5 w-5 fill-rosewood text-rosewood" />
-            <h2 className="text-2xl font-bold text-ink">Top Google reviews</h2>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-2">
+              <Star className="h-5 w-5 fill-rosewood text-rosewood" />
+              <h2 className="text-2xl font-bold text-ink">Top Google reviews</h2>
+            </div>
+            <a href={allReviewsUrl} target="_blank" rel="noreferrer" className="text-sm font-bold text-rosewood">
+              Read all reviews
+            </a>
           </div>
           <div className="mt-5 grid gap-4 lg:grid-cols-3">
             {verifiedPlacesReviews.map((review) => (
@@ -368,18 +403,21 @@ export default async function SalonPage() {
                   </div>
                 </div>
                 <p className="mt-4 text-sm leading-6 text-ink/68">{review.text}</p>
+                <a href={review.url} target="_blank" rel="noreferrer" className="mt-4 inline-flex text-sm font-bold text-rosewood">
+                  Read full review
+                </a>
               </article>
             ))}
           </div>
           <p className="mt-4 text-xs font-semibold text-ink/45">
-            Reviews are sourced from the salon&apos;s Google Places profile and shortened for this portfolio prototype.
+            Review excerpts are sourced from Google Places. Each card links to the full review on Google Maps.
           </p>
         </section>
 
         <section className="mt-8 rounded-[1.75rem] bg-white p-5 shadow-soft lg:p-8">
           <div className="flex items-center gap-2">
             <Images className="h-5 w-5 text-rosewood" />
-            <h2 className="text-2xl font-bold text-ink">Photos from Google Places</h2>
+            <h2 className="text-2xl font-bold text-ink">Owner photos from Google Places</h2>
           </div>
           <div className="mt-5 grid gap-3 md:grid-cols-3">
             {verifiedPlacesPhotos.map((photo) => (
@@ -387,6 +425,18 @@ export default async function SalonPage() {
                 <Image src={photo.url} alt={photo.alt} width={1200} height={900} className="h-64 w-full object-cover" />
                 <figcaption className="px-3 py-2 text-xs font-semibold text-ink/50">{photo.credit}</figcaption>
               </figure>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-8 rounded-[1.75rem] bg-white p-5 shadow-soft lg:p-8">
+          <h2 className="text-2xl font-bold text-ink">Salon FAQ</h2>
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            {salonFaqs.map((faq) => (
+              <article key={faq.question} className="rounded-[1.25rem] border border-champagne bg-pearl p-4">
+                <h3 className="font-bold text-ink">{faq.question}</h3>
+                <p className="mt-2 text-sm leading-6 text-ink/65">{faq.answer}</p>
+              </article>
             ))}
           </div>
         </section>
