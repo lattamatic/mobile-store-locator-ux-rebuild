@@ -73,6 +73,14 @@ GOOGLE_PLACES_API_KEY=your_google_places_api_key
 DAVID_MALLETT_PLACE_ID=optional_google_place_id
 ```
 
+Copy the example file before local testing:
+
+```bash
+cp .env.local.example .env.local
+```
+
+Then paste your real values into `.env.local`. Do not commit `.env.local`.
+
 GitHub Pages deployment:
 
 - Add `GOOGLE_PLACES_API_KEY` as a repository secret.
