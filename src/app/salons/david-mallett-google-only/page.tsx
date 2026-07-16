@@ -1,22 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  CalendarDays,
-  Clock,
-  ExternalLink,
-  Facebook,
-  Images,
-  Instagram,
-  MapPin,
-  Music2,
-  Phone,
-  ShieldCheck,
-  Sparkles,
-  Star,
-  Youtube
-} from "lucide-react";
+import { ArrowLeft, CalendarDays, Clock, ExternalLink, Images, MapPin, Phone, ShieldCheck, Star } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { getGooglePlacesSalonData } from "@/lib/google-places";
 
@@ -29,18 +14,10 @@ const salon = {
   postalCode: "75002",
   phone: "+33 1 40 20 00 23",
   email: "info@david-mallett.com",
-  website: "https://david-mallett.com/pages/notre-dame",
+  website: "https://david-mallett.com/",
   closingTime: "20:00",
   heroImage:
     "https://commons.wikimedia.org/wiki/Special:FilePath/Paris%20-%2014%20rue%20Notre-Dame-des-Victoires%20-%20facade.jpg",
-  services: [
-    { name: "David Mallett cut and blow-dry", duration: "Signature service", price: "330 EUR" },
-    { name: "Senior stylist cut and blow-dry", duration: "Precision haircut", price: "180 EUR" },
-    { name: "Tokio hair treatment", duration: "60 min", price: "from 120 EUR" },
-    { name: "Classic balayage", duration: "Color service", price: "from 200 EUR" },
-    { name: "Root color touch-up", duration: "Color service", price: "from 175 EUR" },
-    { name: "Manicure", duration: "Beauty service", price: "70 EUR" }
-  ],
   hours: [
     ["Monday", "09:00-20:00"],
     ["Tuesday", "08:00-20:00"],
@@ -49,10 +26,6 @@ const salon = {
     ["Friday", "08:00-20:00"],
     ["Saturday", "09:00-20:00"],
     ["Sunday", "Closed"]
-  ],
-  sourceNotes: [
-    "Official David Mallett page: address, phone, salon description, selected prices, and opening hours.",
-    "Google Places: rating, review count, reviews, owner photos, current open status, directions link, and verified map coordinates."
   ]
 };
 
@@ -126,78 +99,23 @@ const verifiedPlacesReviews = [
   }
 ];
 
-const salonFaqs = [
-  {
-    question: "Do I need an appointment at David Mallett?",
-    answer: "For a premium salon experience, users should book ahead or call the salon before visiting."
-  },
-  {
-    question: "Where is the salon located?",
-    answer: "The salon is at 14 Rue Notre Dame des Victoires in Paris 75002, near Place des Victoires and Galerie Vivienne."
-  },
-  {
-    question: "What information should a real salon page combine?",
-    answer: "A strong local SEO page combines Google Places trust data, owner photos, first-party service content, FAQs, and clear conversion CTAs."
-  },
-  {
-    question: "Are services and prices from Google Places?",
-    answer: "No. Services and prices should come from the salon website or internal catalog because Google Places does not reliably provide salon service menus or price lists."
-  }
-];
-
-const socialLinks = [
-  {
-    name: "TikTok",
-    handle: "@david_mallett",
-    url: "https://www.tiktok.com/@david_mallett",
-    icon: Music2
-  },
-  {
-    name: "YouTube",
-    handle: "@DavidMallettParis",
-    url: "https://www.youtube.com/@DavidMallettParis",
-    icon: Youtube
-  },
-  {
-    name: "Instagram",
-    handle: "@davidmallett",
-    url: "https://www.instagram.com/davidmallett/",
-    icon: Instagram
-  },
-  {
-    name: "Facebook",
-    handle: "davidmallett.paris",
-    url: "https://www.facebook.com/davidmallett.paris/",
-    icon: Facebook
-  }
-];
-
 export const metadata: Metadata = {
-  title: `${salon.shortName} | Hair Salon in Paris ${salon.postalCode}`,
-  description:
-    "Discover David Mallett in Paris 75002 with Google rating, reviews, owner photos, hours, directions, services, and local salon FAQ.",
+  title: `${salon.shortName} | Google Places Only Example`,
+  description: "A salon page example using Google Places content without brand-managed description, services, FAQ, or social links.",
   alternates: {
-    canonical: "/salons/david-mallett-notre-dame-des-victoires"
+    canonical: "/salons/david-mallett-google-only"
   },
   openGraph: {
-    title: `${salon.shortName} | Hair Salon in Paris`,
-    description: "Paris hair salon profile with Google rating, reviews, owner photos, hours, and directions.",
+    title: `${salon.shortName} | Google Places Only Example`,
+    description: "Google Places-backed salon profile with address, hours, rating, reviews, photos, and visit CTAs.",
     type: "website",
     images: [{ url: salon.heroImage, alt: "Facade at 14 rue Notre Dame des Victoires in Paris" }]
   }
 };
 
-export default async function SalonPage() {
+export default async function GoogleOnlySalonPage() {
   const placesData = await getGooglePlacesSalonData({
     fallbackQuery: `${salon.name}, ${salon.address}, ${salon.postalCode} ${salon.city}, France`
-  });
-  console.info("[places-build-diagnostic]", {
-    hasGooglePlacesApiKey: Boolean(process.env.GOOGLE_PLACES_API_KEY),
-    hasDavidMallettPlaceId: Boolean(process.env.DAVID_MALLETT_PLACE_ID),
-    placesSource: placesData.source,
-    hasRating: Boolean(placesData.rating),
-    hasReviewCount: Boolean(placesData.userRatingCount),
-    hasPhoto: Boolean(placesData.photoUrl)
   });
 
   const enrichedSalon = placesData.source === "google-places" ? placesData : verifiedPlacesFallback;
@@ -209,7 +127,6 @@ export default async function SalonPage() {
   const directionsUrl = enrichedSalon.googleMapsUri ?? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(fullAddress)}`;
   const heroImage = verifiedPlacesPhotos[0]?.url ?? salon.heroImage;
   const weekdayDescriptions = enrichedSalon.weekdayDescriptions;
-  const hasVerifiedPlacesProfile = true;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "HairSalon",
@@ -234,7 +151,6 @@ export default async function SalonPage() {
         }
       : {}),
     telephone: displayPhone,
-    sameAs: socialLinks.map((social) => social.url),
     ...(enrichedSalon.rating && enrichedSalon.userRatingCount
       ? {
           aggregateRating: {
@@ -254,16 +170,7 @@ export default async function SalonPage() {
           opens,
           closes
         };
-      }),
-    makesOffer: salon.services.map((service) => ({
-      "@type": "Offer",
-      price: service.price.replace("from ", "").replace(" EUR", ""),
-      priceCurrency: "EUR",
-      itemOffered: {
-        "@type": "Service",
-        name: service.name
-      }
-    }))
+      })
   };
 
   return (
@@ -281,10 +188,10 @@ export default async function SalonPage() {
           style={{
             backgroundImage: `linear-gradient(90deg, rgba(25,21,18,0.66), rgba(25,21,18,0.16)), url('${heroImage}')`
           }}
-          aria-label="Facade of the David Mallett salon building in Paris"
+          aria-label="David Mallett salon image"
         >
           <div className="flex min-h-[300px] max-w-3xl flex-col justify-end p-6 text-white lg:min-h-[440px] lg:p-10">
-            <h1 className="mt-4 text-4xl font-bold lg:text-6xl">{salon.shortName}</h1>
+            <h1 className="text-4xl font-bold lg:text-6xl">{displayName}</h1>
             <p className="mt-4 text-lg leading-8 text-white/84">
               {salon.locationLabel} · Paris {salon.postalCode}
             </p>
@@ -297,15 +204,11 @@ export default async function SalonPage() {
               <Badge tone={enrichedSalon.openNow === false ? "neutral" : "success"}>
                 {enrichedSalon.openNow === undefined ? "Open today" : enrichedSalon.openNow ? "Open now" : "Closed now"}
               </Badge>
-              <Badge>{enrichedSalon.primaryType ?? "Luxury hair salon"}</Badge>
+              <Badge>{enrichedSalon.primaryType ?? "Hair salon"}</Badge>
               <Badge>Paris {salon.postalCode}</Badge>
             </div>
 
             <h2 className="mt-5 text-3xl font-bold text-ink lg:text-5xl">{displayName}</h2>
-            <p className="mt-4 max-w-2xl text-lg leading-8 text-ink/68">
-              The original David Mallett salon opened in 2003 and is known for cut, styling, color, keratin care, Tokio treatments,
-              manicure, and private salon services.
-            </p>
 
             <div className="mt-6 grid gap-3 sm:grid-cols-3">
               <a
@@ -322,16 +225,16 @@ export default async function SalonPage() {
               <div className="rounded-[1.25rem] border border-champagne bg-pearl p-4">
                 <ShieldCheck className="h-5 w-5 text-rosewood" />
                 <strong className="mt-3 block text-sm text-ink">
-                  {enrichedSalon.rating ? `${enrichedSalon.rating} Google rating` : "Source-backed profile"}
+                  {enrichedSalon.rating ? `${enrichedSalon.rating} Google rating` : "Google profile"}
                 </strong>
                 <span className="text-sm text-ink/60">
-                  {enrichedSalon.userRatingCount ? `${enrichedSalon.userRatingCount} Google reviews` : "Verified Google Places profile"}
+                  {enrichedSalon.userRatingCount ? `${enrichedSalon.userRatingCount} Google reviews` : "Review count unavailable"}
                 </span>
               </div>
               <div className="rounded-[1.25rem] border border-champagne bg-pearl p-4">
                 <Clock className="h-5 w-5 text-rosewood" />
                 <strong className="mt-3 block text-sm text-ink">Closes at {salon.closingTime}</strong>
-                <span className="text-sm text-ink/60">Monday to Saturday schedule</span>
+                <span className="text-sm text-ink/60">Today&apos;s visit planning</span>
               </div>
             </div>
 
@@ -359,7 +262,7 @@ export default async function SalonPage() {
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-champagne bg-white px-5 text-sm font-semibold text-ink transition hover:border-rosewood"
               >
                 <ExternalLink className="h-4 w-4" />
-                Official site
+                Website
               </a>
             </div>
           </section>
@@ -385,19 +288,35 @@ export default async function SalonPage() {
 
         <section className="mt-8 grid gap-5 lg:grid-cols-[1fr_360px]">
           <div className="rounded-[1.75rem] bg-white p-5 shadow-soft lg:p-8">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-rosewood" />
-              <h2 className="text-2xl font-bold text-ink">Selected services and prices</h2>
-            </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {salon.services.map((service) => (
-                <article key={service.name} className="rounded-[1.25rem] border border-champagne bg-pearl p-4">
-                  <h3 className="font-bold text-ink">{service.name}</h3>
-                  <p className="mt-2 text-sm text-ink/60">
-                    {service.duration} · {service.price}
-                  </p>
-                </article>
-              ))}
+            <div className="grid gap-3 sm:grid-cols-3">
+              <a
+                href={directionsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-[1.25rem] border border-champagne bg-pearl p-4 transition hover:border-rosewood hover:bg-white"
+              >
+                <MapPin className="h-5 w-5 text-rosewood" />
+                <strong className="mt-3 block text-sm text-ink">Map location</strong>
+                <span className="text-sm text-ink/60">Open Google Maps</span>
+              </a>
+              <a
+                href={`tel:${displayPhone.replaceAll(" ", "")}`}
+                className="rounded-[1.25rem] border border-champagne bg-pearl p-4 transition hover:border-rosewood hover:bg-white"
+              >
+                <Phone className="h-5 w-5 text-rosewood" />
+                <strong className="mt-3 block text-sm text-ink">Phone</strong>
+                <span className="text-sm text-ink/60">{displayPhone}</span>
+              </a>
+              <a
+                href={displayWebsite}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-[1.25rem] border border-champagne bg-pearl p-4 transition hover:border-rosewood hover:bg-white"
+              >
+                <ExternalLink className="h-5 w-5 text-rosewood" />
+                <strong className="mt-3 block text-sm text-ink">Website</strong>
+                <span className="text-sm text-ink/60">Open website</span>
+              </a>
             </div>
           </div>
 
@@ -458,47 +377,6 @@ export default async function SalonPage() {
             ))}
           </div>
         </section>
-
-        <section className="mt-8 rounded-[1.75rem] bg-white p-5 shadow-soft lg:p-8">
-          <h2 className="text-2xl font-bold text-ink">Follow David Mallett</h2>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {socialLinks.map((social) => {
-              const Icon = social.icon;
-
-              return (
-                <a
-                  key={social.name}
-                  href={social.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group flex items-center gap-3 rounded-[1.25rem] border border-champagne bg-pearl p-4 transition hover:border-rosewood hover:bg-white"
-                  aria-label={`Follow ${salon.name} on ${social.name}`}
-                >
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-rosewood shadow-sm transition group-hover:bg-rosewood group-hover:text-white">
-                    <Icon className="h-5 w-5" />
-                  </span>
-                  <span className="min-w-0">
-                    <strong className="block text-sm text-ink">{social.name}</strong>
-                    <span className="block truncate text-sm text-ink/55">{social.handle}</span>
-                  </span>
-                </a>
-              );
-            })}
-          </div>
-        </section>
-
-        <section className="mt-8 rounded-[1.75rem] bg-white p-5 shadow-soft lg:p-8">
-          <h2 className="text-2xl font-bold text-ink">Salon FAQ</h2>
-          <div className="mt-5 grid gap-3 md:grid-cols-2">
-            {salonFaqs.map((faq) => (
-              <article key={faq.question} className="rounded-[1.25rem] border border-champagne bg-pearl p-4">
-                <h3 className="font-bold text-ink">{faq.question}</h3>
-                <p className="mt-2 text-sm leading-6 text-ink/65">{faq.answer}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
       </section>
     </main>
   );
