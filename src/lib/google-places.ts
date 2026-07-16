@@ -80,6 +80,12 @@ const TEXT_SEARCH_FIELDS = [
   "places.googleMapsUri"
 ].join(",");
 
+const PLACES_REQUEST_TIMEOUT_MS = 8000;
+
+function createPlacesRequestSignal() {
+  return AbortSignal.timeout(PLACES_REQUEST_TIMEOUT_MS);
+}
+
 function getPhotoUrl(photoName: string | undefined, apiKey: string) {
   if (!photoName) return undefined;
 
@@ -114,6 +120,7 @@ function normalizePlace(place: GooglePlace, apiKey: string): PlacesSalonData {
 
 async function fetchPlaceDetails(placeId: string, apiKey: string) {
   const response = await fetch(`https://places.googleapis.com/v1/places/${placeId}`, {
+    signal: createPlacesRequestSignal(),
     headers: {
       "X-Goog-Api-Key": apiKey,
       "X-Goog-FieldMask": PLACE_DETAILS_FIELDS
@@ -130,6 +137,7 @@ async function fetchPlaceDetails(placeId: string, apiKey: string) {
 async function findPlaceIdByText(query: string, apiKey: string) {
   const response = await fetch("https://places.googleapis.com/v1/places:searchText", {
     method: "POST",
+    signal: createPlacesRequestSignal(),
     headers: {
       "Content-Type": "application/json",
       "X-Goog-Api-Key": apiKey,
