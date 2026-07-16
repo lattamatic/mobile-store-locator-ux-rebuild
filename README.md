@@ -59,7 +59,26 @@ src/types           Shared TypeScript domain types
 - Tailwind CSS
 - Mock JSON data
 - OpenStreetMap tiles with browser-loaded Leaflet
+- Google Places API build-time enrichment for salon pages
 - Lucide React icons
+
+## Google Places API Setup
+
+Salon pages can fetch Google Places data at build time. This keeps the API key out of the browser and works with GitHub Pages static export.
+
+Local `.env.local`:
+
+```bash
+GOOGLE_PLACES_API_KEY=your_google_places_api_key
+DAVID_MALLETT_PLACE_ID=optional_google_place_id
+```
+
+GitHub Pages deployment:
+
+- Add `GOOGLE_PLACES_API_KEY` as a repository secret.
+- Add `DAVID_MALLETT_PLACE_ID` as an optional repository secret.
+- If no Place ID is provided, the build uses Places Text Search with the salon name and full address, then fetches Place Details.
+- If the API key is missing or the request fails, the page falls back to source-backed static content.
 
 ## Future Improvements
 

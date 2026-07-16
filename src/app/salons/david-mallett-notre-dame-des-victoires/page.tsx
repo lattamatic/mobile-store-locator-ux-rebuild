@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, CalendarDays, Clock, ExternalLink, MapPin, Phone, ShieldCheck, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
+import { getGooglePlacesSalonData } from "@/lib/google-places";
 
 const salon = {
   name: "Salon David Mallett - Notre Dame des Victoires",
@@ -53,24 +54,52 @@ export const metadata: Metadata = {
   }
 };
 
-export default function SalonPage() {
+export default async function SalonPage() {
+  const placesData = await getGooglePlacesSalonData({
+    fallbackQuery: `${salon.name}, ${salon.address}, ${salon.postalCode} ${salon.city}, France`
+  });
   const fullAddress = `${salon.name}, ${salon.address}, ${salon.postalCode} ${salon.city}, France`;
-  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(fullAddress)}`;
+  const displayName = placesData.name ?? salon.name;
+  const displayAddress = placesData.formattedAddress ?? `${salon.address}, ${salon.postalCode} ${salon.city}`;
+  const displayPhone = placesData.phone ?? salon.phone;
+  const displayWebsite = placesData.website ?? salon.website;
+  const directionsUrl = placesData.googleMapsUri ?? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(fullAddress)}`;
+  const heroImage = placesData.photoUrl ?? salon.heroImage;
+  const weekdayDescriptions = placesData.weekdayDescriptions;
+  const isGoogleSourced = placesData.source === "google-places";
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "HairSalon",
-    name: salon.name,
-    image: salon.heroImage,
-    url: salon.website,
+    name: displayName,
+    image: heroImage,
+    url: displayWebsite,
     email: salon.email,
     address: {
       "@type": "PostalAddress",
-      streetAddress: salon.address,
+      streetAddress: displayAddress,
       addressLocality: salon.city,
       postalCode: salon.postalCode,
       addressCountry: "FR"
     },
-    telephone: salon.phone,
+    ...(placesData.latitude && placesData.longitude
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: placesData.latitude,
+            longitude: placesData.longitude
+          }
+        }
+      : {}),
+    telephone: displayPhone,
+    ...(placesData.rating && placesData.userRatingCount
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: placesData.rating,
+            reviewCount: placesData.userRatingCount
+          }
+        }
+      : {}),
     openingHoursSpecification: salon.hours
       .filter(([, hours]) => hours !== "Closed")
       .map(([day, hours]) => {
@@ -106,7 +135,7 @@ export default function SalonPage() {
         <section
           className="mt-6 min-h-[300px] overflow-hidden rounded-[1.75rem] bg-cover bg-center shadow-soft lg:min-h-[440px]"
           style={{
-            backgroundImage: `linear-gradient(90deg, rgba(25,21,18,0.66), rgba(25,21,18,0.16)), url('${salon.heroImage}')`
+            backgroundImage: `linear-gradient(90deg, rgba(25,21,18,0.66), rgba(25,21,18,0.16)), url('${heroImage}')`
           }}
           aria-label="Facade of the David Mallett salon building in Paris"
         >
@@ -122,12 +151,14 @@ export default function SalonPage() {
         <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
           <section className="rounded-[1.75rem] bg-white p-5 shadow-soft lg:p-8">
             <div className="flex flex-wrap gap-2">
-              <Badge tone="success">Open today</Badge>
-              <Badge>Luxury hair salon</Badge>
+              <Badge tone={placesData.openNow === false ? "neutral" : "success"}>
+                {placesData.openNow === undefined ? "Open today" : placesData.openNow ? "Open now" : "Closed now"}
+              </Badge>
+              <Badge>{placesData.primaryType ?? "Luxury hair salon"}</Badge>
               <Badge>Paris {salon.postalCode}</Badge>
             </div>
 
-            <h2 className="mt-5 text-3xl font-bold text-ink lg:text-5xl">{salon.name}</h2>
+            <h2 className="mt-5 text-3xl font-bold text-ink lg:text-5xl">{displayName}</h2>
             <p className="mt-4 max-w-2xl text-lg leading-8 text-ink/68">
               The original David Mallett salon opened in 2003 and is known for cut, styling, color, keratin care, Tokio treatments,
               manicure, and private salon services.
@@ -142,15 +173,17 @@ export default function SalonPage() {
                 aria-label={`Get directions to ${salon.name}`}
               >
                 <MapPin className="h-5 w-5 text-rosewood" />
-                <strong className="mt-3 block text-sm text-ink">{salon.address}</strong>
-                <span className="text-sm text-ink/60">
-                  {salon.city} {salon.postalCode}
-                </span>
+                <strong className="mt-3 block text-sm text-ink">{displayAddress}</strong>
+                <span className="text-sm text-ink/60">Open in Google Maps</span>
               </a>
               <div className="rounded-[1.25rem] border border-champagne bg-pearl p-4">
                 <ShieldCheck className="h-5 w-5 text-rosewood" />
-                <strong className="mt-3 block text-sm text-ink">Source-backed profile</strong>
-                <span className="text-sm text-ink/60">Google rating will come from Places API</span>
+                <strong className="mt-3 block text-sm text-ink">
+                  {placesData.rating ? `${placesData.rating} Google rating` : "Source-backed profile"}
+                </strong>
+                <span className="text-sm text-ink/60">
+                  {placesData.userRatingCount ? `${placesData.userRatingCount} Google reviews` : "Connect Places API for rating and reviews"}
+                </span>
               </div>
               <div className="rounded-[1.25rem] border border-champagne bg-pearl p-4">
                 <Clock className="h-5 w-5 text-rosewood" />
@@ -161,7 +194,7 @@ export default function SalonPage() {
 
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <a
-                href={`tel:${salon.phone.replaceAll(" ", "")}`}
+                href={`tel:${displayPhone.replaceAll(" ", "")}`}
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-ink px-5 text-sm font-semibold text-white transition hover:bg-rosewood"
               >
                 <Phone className="h-4 w-4" />
@@ -177,7 +210,7 @@ export default function SalonPage() {
                 Get directions
               </a>
               <a
-                href={salon.website}
+                href={displayWebsite}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-champagne bg-white px-5 text-sm font-semibold text-ink transition hover:border-rosewood"
@@ -191,12 +224,21 @@ export default function SalonPage() {
           <aside className="rounded-[1.75rem] border border-champagne bg-white p-5 shadow-soft lg:sticky lg:top-8">
             <h2 className="text-sm font-bold uppercase tracking-wide text-rosewood">Opening hours</h2>
             <div className="mt-4 divide-y divide-champagne/70">
-              {salon.hours.map(([day, hours]) => (
-                <div key={day} className="flex items-center justify-between py-3 text-sm">
-                  <span className="font-semibold text-ink">{day}</span>
-                  <span className="text-ink/65">{hours}</span>
-                </div>
-              ))}
+              {weekdayDescriptions
+                ? weekdayDescriptions.map((description) => (
+                    <div key={description} className="py-3 text-sm text-ink/70">
+                      {description}
+                    </div>
+                  ))
+                : salon.hours.map(([day, hours]) => (
+                    <div key={day} className="flex items-center justify-between py-3 text-sm">
+                      <span className="font-semibold text-ink">{day}</span>
+                      <span className="text-ink/65">{hours}</span>
+                    </div>
+                  ))}
+            </div>
+            <div className="mt-4 rounded-2xl bg-pearl p-3 text-xs font-semibold text-rosewood">
+              {isGoogleSourced ? "Live Google Places data loaded at build time" : "Fallback data shown until Places API env vars are configured"}
             </div>
           </aside>
         </div>
@@ -241,7 +283,7 @@ export default function SalonPage() {
             <article>
               <h3 className="font-bold text-ink">What would come from Places API?</h3>
               <p className="mt-2 text-sm leading-6 text-ink/65">
-                Google rating, review count, reviews, photos, Google Maps URI, business status, and current opening hours.
+                Google rating, review count, photos, Google Maps URI, business status, phone, website, and current opening hours.
               </p>
             </article>
             <article>
