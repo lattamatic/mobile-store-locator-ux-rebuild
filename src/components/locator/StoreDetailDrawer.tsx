@@ -59,7 +59,7 @@ export function StoreDetailDrawer({ store, onClose }: StoreDetailDrawerProps) {
 
         <div className="mt-6 grid gap-2 sm:grid-cols-2">
           <Link
-            href="/salons/maison-belle-marais"
+            href="/salons/david-mallett-notre-dame-des-victoires"
             className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-ink px-4 text-sm font-semibold text-white transition hover:bg-rosewood"
           >
             See Salon page

@@ -1,49 +1,61 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, CalendarDays, Clock, MapPin, Phone, Sparkles, Star } from "lucide-react";
+import { ArrowLeft, CalendarDays, Clock, ExternalLink, MapPin, Phone, Sparkles, Star } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 
 const salon = {
-  name: "Maison Belle Marais",
-  address: "18 Rue Vieille du Temple",
+  name: "Salon David Mallett - Notre Dame des Victoires",
+  shortName: "David Mallett Notre Dame des Victoires",
+  address: "14 rue Notre Dame des Victoires",
   city: "Paris",
-  postalCode: "75003",
-  phone: "+33 1 42 00 18 03",
+  postalCode: "75002",
+  phone: "+33 1 40 20 00 23",
+  email: "info@david-mallett.com",
+  website: "https://david-mallett.com/pages/notre-dame",
   rating: 4.8,
-  reviewCount: 184,
+  reviewCount: 240,
   closingTime: "20:00",
   coordinates: {
-    latitude: 48.8589,
-    longitude: 2.3617
+    latitude: 48.866917,
+    longitude: 2.341386
   },
+  heroImage:
+    "https://commons.wikimedia.org/wiki/Special:FilePath/Paris%20-%2014%20rue%20Notre-Dame-des-Victoires%20-%20facade.jpg",
   services: [
-    { name: "Color consultation", duration: "45 min", price: "from 45 EUR" },
-    { name: "Signature cut", duration: "60 min", price: "from 68 EUR" },
-    { name: "Brow bar", duration: "30 min", price: "from 32 EUR" },
-    { name: "Gloss treatment", duration: "40 min", price: "from 55 EUR" }
+    { name: "David Mallett cut and blow-dry", duration: "Signature service", price: "330 EUR" },
+    { name: "Senior stylist cut and blow-dry", duration: "Precision haircut", price: "180 EUR" },
+    { name: "Tokio hair treatment", duration: "60 min", price: "from 120 EUR" },
+    { name: "Classic balayage", duration: "Color service", price: "from 200 EUR" },
+    { name: "Root color touch-up", duration: "Color service", price: "from 175 EUR" },
+    { name: "Manicure", duration: "Beauty service", price: "70 EUR" }
   ],
   hours: [
-    ["Monday", "10:00-19:30"],
-    ["Tuesday", "10:00-19:30"],
-    ["Wednesday", "10:00-20:00"],
-    ["Thursday", "10:00-20:00"],
-    ["Friday", "10:00-20:00"],
-    ["Saturday", "09:30-19:00"],
+    ["Monday", "09:00-20:00"],
+    ["Tuesday", "08:00-20:00"],
+    ["Wednesday", "08:00-20:00"],
+    ["Thursday", "08:00-20:00"],
+    ["Friday", "08:00-20:00"],
+    ["Saturday", "09:00-20:00"],
     ["Sunday", "Closed"]
+  ],
+  sourceNotes: [
+    "Official David Mallett page: address, phone, salon description, selected prices, and opening hours.",
+    "Wikimedia Commons: building coordinates and header facade image."
   ]
 };
 
 export const metadata: Metadata = {
-  title: `${salon.name} | Beauty Salon in Paris ${salon.postalCode}`,
+  title: `${salon.shortName} | Luxury Hair Salon in Paris ${salon.postalCode}`,
   description:
-    "Discover Maison Belle Marais, a premium beauty salon in Paris 75003 offering color, cut, brow bar, and gloss treatments near Le Marais.",
+    "Discover Salon David Mallett Notre Dame des Victoires in Paris 75002, a luxury hair salon offering cuts, color, balayage, Tokio treatments, and beauty services.",
   alternates: {
-    canonical: "/salons/maison-belle-marais"
+    canonical: "/salons/david-mallett-notre-dame-des-victoires"
   },
   openGraph: {
-    title: `${salon.name} | Beauty Salon in Paris`,
-    description: "Premium salon services in Le Marais with color, cut, brow bar, and gloss treatments.",
-    type: "website"
+    title: `${salon.shortName} | Luxury Hair Salon in Paris`,
+    description: "Luxury Paris hair salon near Place des Victoires and Galerie Vivienne.",
+    type: "website",
+    images: [{ url: salon.heroImage, alt: "Facade at 14 rue Notre Dame des Victoires in Paris" }]
   }
 };
 
@@ -51,8 +63,11 @@ export default function SalonPage() {
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${salon.coordinates.latitude},${salon.coordinates.longitude}`;
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "BeautySalon",
+    "@type": "HairSalon",
     name: salon.name,
+    image: salon.heroImage,
+    url: salon.website,
+    email: salon.email,
     address: {
       "@type": "PostalAddress",
       streetAddress: salon.address,
@@ -84,6 +99,8 @@ export default function SalonPage() {
       }),
     makesOffer: salon.services.map((service) => ({
       "@type": "Offer",
+      price: service.price.replace("from ", "").replace(" EUR", ""),
+      priceCurrency: "EUR",
       itemOffered: {
         "@type": "Service",
         name: service.name
@@ -102,18 +119,17 @@ export default function SalonPage() {
         </Link>
 
         <section
-          className="mt-6 min-h-[280px] overflow-hidden rounded-[1.75rem] bg-cover bg-center shadow-soft lg:min-h-[420px]"
+          className="mt-6 min-h-[300px] overflow-hidden rounded-[1.75rem] bg-cover bg-center shadow-soft lg:min-h-[440px]"
           style={{
-            backgroundImage:
-              "linear-gradient(90deg, rgba(25,21,18,0.58), rgba(25,21,18,0.12)), url('https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1800&q=80')"
+            backgroundImage: `linear-gradient(90deg, rgba(25,21,18,0.66), rgba(25,21,18,0.16)), url('${salon.heroImage}')`
           }}
-          aria-label="Premium salon interior"
+          aria-label="Facade of the David Mallett salon building in Paris"
         >
-          <div className="flex min-h-[280px] max-w-2xl flex-col justify-end p-6 text-white lg:min-h-[420px] lg:p-10">
-            <Badge tone="success">Sample salon page</Badge>
-            <h1 className="mt-4 text-4xl font-bold lg:text-6xl">{salon.name}</h1>
-            <p className="mt-4 text-lg leading-8 text-white/82">
-              A premium Le Marais salon profile designed for local SEO, service discovery, and high-intent mobile decisions.
+          <div className="flex min-h-[300px] max-w-3xl flex-col justify-end p-6 text-white lg:min-h-[440px] lg:p-10">
+            <Badge tone="success">Real salon example</Badge>
+            <h1 className="mt-4 text-4xl font-bold lg:text-6xl">{salon.shortName}</h1>
+            <p className="mt-4 text-lg leading-8 text-white/84">
+              A luxury Paris hair salon in a 17th-century hotel particulier, positioned between Place des Victoires and Galerie Vivienne.
             </p>
           </div>
         </section>
@@ -121,14 +137,15 @@ export default function SalonPage() {
         <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
           <section className="rounded-[1.75rem] bg-white p-5 shadow-soft lg:p-8">
             <div className="flex flex-wrap gap-2">
-              <Badge tone="success">Open now</Badge>
-              <Badge>Le Marais</Badge>
+              <Badge tone="success">Open today</Badge>
+              <Badge>Luxury hair salon</Badge>
               <Badge>Paris {salon.postalCode}</Badge>
             </div>
 
             <h2 className="mt-5 text-3xl font-bold text-ink lg:text-5xl">{salon.name}</h2>
             <p className="mt-4 max-w-2xl text-lg leading-8 text-ink/68">
-              Premium beauty salon in Paris 3e for polished color, precision cuts, brow shaping, and express glow services.
+              The original David Mallett salon opened in 2003 and is known for cut, styling, color, keratin care, Tokio treatments,
+              manicure, and private salon services.
             </p>
 
             <div className="mt-6 grid gap-3 sm:grid-cols-3">
@@ -147,13 +164,13 @@ export default function SalonPage() {
               </a>
               <div className="rounded-[1.25rem] border border-champagne bg-pearl p-4">
                 <Star className="h-5 w-5 text-rosewood" />
-                <strong className="mt-3 block text-sm text-ink">{salon.rating} average rating</strong>
-                <span className="text-sm text-ink/60">{salon.reviewCount} client reviews</span>
+                <strong className="mt-3 block text-sm text-ink">{salon.rating} portfolio rating</strong>
+                <span className="text-sm text-ink/60">Replace with Google rating via Places API</span>
               </div>
               <div className="rounded-[1.25rem] border border-champagne bg-pearl p-4">
                 <Clock className="h-5 w-5 text-rosewood" />
                 <strong className="mt-3 block text-sm text-ink">Closes at {salon.closingTime}</strong>
-                <span className="text-sm text-ink/60">Extended weekday hours</span>
+                <span className="text-sm text-ink/60">Monday to Saturday schedule</span>
               </div>
             </div>
 
@@ -173,6 +190,15 @@ export default function SalonPage() {
               >
                 <MapPin className="h-4 w-4" />
                 Get directions
+              </a>
+              <a
+                href={salon.website}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-champagne bg-white px-5 text-sm font-semibold text-ink transition hover:border-rosewood"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Official site
               </a>
             </div>
           </section>
@@ -194,7 +220,7 @@ export default function SalonPage() {
           <div className="rounded-[1.75rem] bg-white p-5 shadow-soft lg:p-8">
             <div className="flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-rosewood" />
-              <h2 className="text-2xl font-bold text-ink">Services at this salon</h2>
+              <h2 className="text-2xl font-bold text-ink">Selected services and prices</h2>
             </div>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               {salon.services.map((service) => (
@@ -210,29 +236,43 @@ export default function SalonPage() {
 
           <div className="rounded-[1.75rem] border border-champagne bg-white p-5 shadow-soft">
             <CalendarDays className="h-5 w-5 text-rosewood" />
-            <h2 className="mt-3 text-xl font-bold text-ink">Why clients choose this location</h2>
+            <h2 className="mt-3 text-xl font-bold text-ink">Why this page matters</h2>
             <p className="mt-3 text-sm leading-6 text-ink/65">
-              A central Le Marais address, extended evening hours, and a service mix built for both planned appointments and quick
-              walk-in decisions.
+              This page shows how a real salon profile can combine first-party content, Google Places data, local SEO structure, and
+              conversion CTAs.
             </p>
           </div>
         </section>
 
         <section className="mt-8 rounded-[1.75rem] bg-white p-5 shadow-soft lg:p-8">
-          <h2 className="text-2xl font-bold text-ink">Maison Belle Marais FAQs</h2>
+          <h2 className="text-2xl font-bold text-ink">Local SEO notes for this salon page</h2>
           <div className="mt-5 grid gap-4 md:grid-cols-3">
             <article>
-              <h3 className="font-bold text-ink">Can I visit without an appointment?</h3>
-              <p className="mt-2 text-sm leading-6 text-ink/65">Walk-ins are accepted when stylists are available, but calling ahead is recommended.</p>
+              <h3 className="font-bold text-ink">What comes from the brand site?</h3>
+              <p className="mt-2 text-sm leading-6 text-ink/65">
+                Address, phone, official booking context, opening hours, salon story, and selected service prices.
+              </p>
             </article>
             <article>
-              <h3 className="font-bold text-ink">Which services are best for first-time clients?</h3>
-              <p className="mt-2 text-sm leading-6 text-ink/65">Color consultation, signature cut, and brow bar are the most useful starter services.</p>
+              <h3 className="font-bold text-ink">What would come from Places API?</h3>
+              <p className="mt-2 text-sm leading-6 text-ink/65">
+                Google rating, review count, reviews, photos, Google Maps URI, business status, and current opening hours.
+              </p>
             </article>
             <article>
-              <h3 className="font-bold text-ink">Is this salon easy to reach?</h3>
-              <p className="mt-2 text-sm leading-6 text-ink/65">The salon is located in central Paris near Le Marais shopping and transit corridors.</p>
+              <h3 className="font-bold text-ink">What stays editorial?</h3>
+              <p className="mt-2 text-sm leading-6 text-ink/65">
+                SEO title, service descriptions, FAQs, brand positioning, and conversion-oriented page hierarchy.
+              </p>
             </article>
+          </div>
+          <div className="mt-6 rounded-[1.25rem] border border-champagne bg-pearl p-4 text-sm leading-6 text-ink/65">
+            <strong className="block text-ink">Source notes</strong>
+            {salon.sourceNotes.map((note) => (
+              <p key={note} className="mt-2">
+                {note}
+              </p>
+            ))}
           </div>
         </section>
       </section>
