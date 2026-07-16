@@ -87,18 +87,15 @@ const allReviewsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeU
 const verifiedPlacesPhotos = [
   {
     url: "https://lh3.googleusercontent.com/place-photos/AG9NLjAqh1nS-ztNUXXEaVRvbnHJBgTSSkTggOGwtHJr0835wnXMLJ1Wz3YNfkCYlYWtV25LnibleCA1GR6krWhv34nwqK_u4U_zw_608WRVFzXLGYWDWJ5nFPMmRL9-J_P78g4S3KgZzup6arn-nQ=s4800-w1200",
-    alt: "Interior salon image from the David Mallett Google Places profile",
-    credit: "Google Places photo by David Mallett"
+    alt: "Interior salon image from the David Mallett Google Places profile"
   },
   {
     url: "https://lh3.googleusercontent.com/place-photos/AG9NLjD1dDGD4LxU4AKR1WKg1iTQaZsRuc1m1ujy7RThzKJLRCr25-T4Ea4XwCghDlPuTtINunBD59GMIvupxfbFG-G1A2XjWd4bA-rfjPk10uQFPmGrlgl1r8VRjWeoX-f29c_j2_rhxpfduvVWog=s4800-w901",
-    alt: "Salon detail image from the David Mallett Google Places profile",
-    credit: "Google Places photo by David Mallett"
+    alt: "Salon detail image from the David Mallett Google Places profile"
   },
   {
     url: "https://lh3.googleusercontent.com/place-photos/AG9NLjDP75gENmVmg29ANzupo09nt3wiCfUfQ3i3_1iOywMDAah_ipjDYGzakmGSosT6HQy18aYKJ2U3yX92x7cRIB0DvBcMywbflgAkegT8zhP9UfmYX3oxUGkZWL-9bplhs2PCOAg02PwDMtaYvA=s4800-w1200",
-    alt: "Salon interior image from the David Mallett Google Places profile",
-    credit: "Google Places photo by David Mallett"
+    alt: "Salon interior image from the David Mallett Google Places profile"
   }
 ];
 
@@ -287,7 +284,6 @@ export default async function SalonPage() {
           aria-label="Facade of the David Mallett salon building in Paris"
         >
           <div className="flex min-h-[300px] max-w-3xl flex-col justify-end p-6 text-white lg:min-h-[440px] lg:p-10">
-            <Badge tone="success">Real salon example</Badge>
             <h1 className="mt-4 text-4xl font-bold lg:text-6xl">{salon.shortName}</h1>
             <p className="mt-4 text-lg leading-8 text-white/84">
               {salon.locationLabel} · Paris {salon.postalCode}
@@ -384,11 +380,6 @@ export default async function SalonPage() {
                     </div>
                   ))}
             </div>
-            <div className="mt-4 rounded-2xl bg-pearl p-3 text-xs font-semibold text-rosewood">
-              {placesData.source === "google-places" && hasVerifiedPlacesProfile
-                ? "Live Google Places data loaded at build time"
-                : "Verified Google Places snapshot shown for this prototype"}
-            </div>
           </aside>
         </div>
 
@@ -452,9 +443,6 @@ export default async function SalonPage() {
               </article>
             ))}
           </div>
-          <p className="mt-4 text-xs font-semibold text-ink/45">
-            Review excerpts are sourced from Google Places. Each card links to the full review on Google Maps.
-          </p>
         </section>
 
         <section className="mt-8 rounded-[1.75rem] bg-white p-5 shadow-soft lg:p-8">
@@ -466,22 +454,13 @@ export default async function SalonPage() {
             {verifiedPlacesPhotos.map((photo) => (
               <figure key={photo.url} className="overflow-hidden rounded-[1.25rem] border border-champagne bg-pearl">
                 <Image src={photo.url} alt={photo.alt} width={1200} height={900} className="h-64 w-full object-cover" />
-                <figcaption className="px-3 py-2 text-xs font-semibold text-ink/50">{photo.credit}</figcaption>
               </figure>
             ))}
           </div>
         </section>
 
         <section className="mt-8 rounded-[1.75rem] bg-white p-5 shadow-soft lg:p-8">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-ink">Follow David Mallett</h2>
-              <p className="mt-2 text-sm leading-6 text-ink/60">
-                Brand-managed social links are kept outside Google Places so the salon team can control the official channels.
-              </p>
-            </div>
-            <Badge>Brand-level content</Badge>
-          </div>
+          <h2 className="text-2xl font-bold text-ink">Follow David Mallett</h2>
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {socialLinks.map((social) => {
               const Icon = social.icon;
