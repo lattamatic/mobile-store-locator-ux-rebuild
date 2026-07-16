@@ -58,6 +58,15 @@ export default async function SalonPage() {
   const placesData = await getGooglePlacesSalonData({
     fallbackQuery: `${salon.name}, ${salon.address}, ${salon.postalCode} ${salon.city}, France`
   });
+  console.info("[places-build-diagnostic]", {
+    hasGooglePlacesApiKey: Boolean(process.env.GOOGLE_PLACES_API_KEY),
+    hasDavidMallettPlaceId: Boolean(process.env.DAVID_MALLETT_PLACE_ID),
+    placesSource: placesData.source,
+    hasRating: Boolean(placesData.rating),
+    hasReviewCount: Boolean(placesData.userRatingCount),
+    hasPhoto: Boolean(placesData.photoUrl)
+  });
+
   const fullAddress = `${salon.name}, ${salon.address}, ${salon.postalCode} ${salon.city}, France`;
   const displayName = placesData.name ?? salon.name;
   const displayAddress = placesData.formattedAddress ?? `${salon.address}, ${salon.postalCode} ${salon.city}`;

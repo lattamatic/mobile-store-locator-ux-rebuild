@@ -172,7 +172,12 @@ export async function getGooglePlacesSalonData({
     }
 
     return await fetchPlaceDetails(resolvedPlaceId, apiKey);
-  } catch {
+  } catch (error) {
+    console.warn("[places-build-diagnostic]", {
+      status: "fallback",
+      reason: error instanceof Error ? error.message : "Unknown Google Places error"
+    });
+
     return { source: "fallback" };
   }
 }
