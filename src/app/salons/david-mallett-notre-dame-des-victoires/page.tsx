@@ -1,7 +1,22 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, CalendarDays, Clock, ExternalLink, Images, MapPin, Phone, ShieldCheck, Sparkles, Star } from "lucide-react";
+import {
+  ArrowLeft,
+  CalendarDays,
+  Clock,
+  ExternalLink,
+  Facebook,
+  Images,
+  Instagram,
+  MapPin,
+  Music2,
+  Phone,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Youtube
+} from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { getGooglePlacesSalonData } from "@/lib/google-places";
 
@@ -133,6 +148,33 @@ const salonFaqs = [
   }
 ];
 
+const socialLinks = [
+  {
+    name: "TikTok",
+    handle: "@david_mallett",
+    url: "https://www.tiktok.com/@david_mallett",
+    icon: Music2
+  },
+  {
+    name: "YouTube",
+    handle: "@DavidMallettParis",
+    url: "https://www.youtube.com/@DavidMallettParis",
+    icon: Youtube
+  },
+  {
+    name: "Instagram",
+    handle: "@davidmallett",
+    url: "https://www.instagram.com/davidmallett/",
+    icon: Instagram
+  },
+  {
+    name: "Facebook",
+    handle: "davidmallett.paris",
+    url: "https://www.facebook.com/davidmallett.paris/",
+    icon: Facebook
+  }
+];
+
 export const metadata: Metadata = {
   title: `${salon.shortName} | Hair Salon in Paris ${salon.postalCode}`,
   description:
@@ -195,6 +237,7 @@ export default async function SalonPage() {
         }
       : {}),
     telephone: displayPhone,
+    sameAs: socialLinks.map((social) => social.url),
     ...(enrichedSalon.rating && enrichedSalon.userRatingCount
       ? {
           aggregateRating: {
@@ -426,6 +469,42 @@ export default async function SalonPage() {
                 <figcaption className="px-3 py-2 text-xs font-semibold text-ink/50">{photo.credit}</figcaption>
               </figure>
             ))}
+          </div>
+        </section>
+
+        <section className="mt-8 rounded-[1.75rem] bg-white p-5 shadow-soft lg:p-8">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-ink">Follow David Mallett</h2>
+              <p className="mt-2 text-sm leading-6 text-ink/60">
+                Brand-managed social links are kept outside Google Places so the salon team can control the official channels.
+              </p>
+            </div>
+            <Badge>Brand-level content</Badge>
+          </div>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {socialLinks.map((social) => {
+              const Icon = social.icon;
+
+              return (
+                <a
+                  key={social.name}
+                  href={social.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group flex items-center gap-3 rounded-[1.25rem] border border-champagne bg-pearl p-4 transition hover:border-rosewood hover:bg-white"
+                  aria-label={`Follow ${salon.name} on ${social.name}`}
+                >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-rosewood shadow-sm transition group-hover:bg-rosewood group-hover:text-white">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <span className="min-w-0">
+                    <strong className="block text-sm text-ink">{social.name}</strong>
+                    <span className="block truncate text-sm text-ink/55">{social.handle}</span>
+                  </span>
+                </a>
+              );
+            })}
           </div>
         </section>
 
